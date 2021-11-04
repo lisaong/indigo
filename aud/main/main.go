@@ -12,5 +12,5 @@ import (
 func main() {
 	log.SetPrefix("aud:")
 	fmt.Println(("Aud!"))
-	aud.Load("path")
+	aud.Load("../media/mixkit-tech-house-vibes-130.mp3")
 }

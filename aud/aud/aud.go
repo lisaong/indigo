@@ -1,8 +1,14 @@
 package aud
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func Load(path string) {
-	// Load the file
-	fmt.Println(path)
+	fileinfo, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		fmt.Printf("%s does not exist\n", path)
+	}
+	fmt.Println(fileinfo)
 }

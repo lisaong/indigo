@@ -1,6 +1,7 @@
 // Applies audio effects using Audacity
 // Requires Audacity installed with mod-script-pipe enabled
 // cf. https://github.com/audacity/audacity/blob/master/scripts/piped-work/pipe_test.py
+// Docker images: https://hub.docker.com/r/linuxserver/audacity
 package aud
 
 import (

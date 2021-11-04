@@ -9,10 +9,12 @@ apt_packages_basic=(
     build-essential
     python3-minimal
     python3-pip
-    g++-9
-    libstdc++-9-dev
-    cmake
+    python3-setuptools
+    python3-wheel
+    g++-8
+    libstdc++-8-dev
     git
+    wget
 )
 
 apt_packages_minimal_deps=(
@@ -64,4 +66,7 @@ apt-get install -y --no-install-recommends \
   "${apt_packages_full_deps[@]}"
 
 
-pip3 install conan
+pip3 install wheel conan
+
+wget -O /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.sh
+sh /tmp/cmake.sh --skip-license

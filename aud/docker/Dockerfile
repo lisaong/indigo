@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y dos2unix
 WORKDIR /audacity
 
 COPY ["dependencies.sh", "/audacity/"]
+RUN dos2unix dependencies.sh
 
 # pkg-config is so broken
 # COPY ["pkgconfig/*", "/usr/local/lib/pkgconfig/"]

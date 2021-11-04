@@ -9,8 +9,8 @@ then
     git clone https://github.com/audacity/audacity
 fi
 
+cd /audacity
 mkdir -p build
-
 cd build
 
 cmake_options=(

@@ -70,3 +70,4 @@ pip3 install wheel conan
 
 wget -O /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.sh
 sh /tmp/cmake.sh --skip-license
+ln -s /audacity/bin/cmake /usr/bin/cmake

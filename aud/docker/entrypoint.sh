@@ -42,7 +42,7 @@ cmake_options=(
     # -Daudacity_use_curl=system
 )
 
-/audacity/bin/cmake "${cmake_options[@]}" ../audacity
+cmake "${cmake_options[@]}" ../audacity
 
 exit_status=$?
 

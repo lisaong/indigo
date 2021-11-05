@@ -6,7 +6,7 @@ Tested with Ubuntu 18.04
 
 ```shell
 sh build.sh
-sudo chown -R $USER build/bin/release
+sudo chown -R $USER build/bin/Release
 ```
 
 ## Configure

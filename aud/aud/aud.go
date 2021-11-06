@@ -25,23 +25,25 @@ type Connection struct {
 	fromPipe *os.File
 }
 
-func CreateNamedPipe(mode int) (file *os.File) {
+func CreateNamedPipe(direction int) (file *os.File) {
 
 	const TO_PIPE_PREFIX = "audacity_script_pipe.to."
 	const FROM_PIPE_PREFIX = "audacity_script_pipe.from."
 
-	var flag int
-	var prefix string
-	if mode == READ {
-		flag = os.O_RDONLY
+	var (
+		flags  int
+		prefix string
+	)
+	if direction == READ {
+		flags = os.O_RDONLY
 		prefix = FROM_PIPE_PREFIX
 	} else {
-		flag = os.O_RDWR
+		flags = os.O_RDWR
 		prefix = TO_PIPE_PREFIX
 	}
 
 	path := filepath.Join(os.TempDir(), prefix+strconv.Itoa(os.Getuid()))
-	file, err := os.OpenFile(path, flag, 0600)
+	file, err := os.OpenFile(path, flags, os.ModeNamedPipe)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Could not create file: %s %w. Make sure Audacity is running with mod-script-pipe enabled.", path, err))
 	} else {
@@ -70,34 +72,31 @@ func Disconnect(conn Connection) {
 	close(conn.fromPipe)
 }
 
+func ReadLine(rd *bufio.Reader) (string, error) {
+	var (
+		isPrefix = true
+		err      error
+		line, ln []byte
+	)
+	for isPrefix && err == nil {
+		line, isPrefix, err = rd.ReadLine()
+		ln = append(ln, line...)
+	}
+	return string(ln), err
+}
+
 // Sends a single command
 func SendCommand(conn Connection, command string) {
 	fmt.Println("Send: >>> \n" + command)
-	conn.toPipe.WriteString(command)
+	conn.toPipe.WriteString(command + "\n")
 	conn.toPipe.Sync()
 
-	var response string
 	// Note: default buffer size is 4K
 	rd := bufio.NewReader(conn.fromPipe)
-	for {
-		line, err := rd.ReadString('\n')
-		if err != nil {
-			fmt.Print(err)
-		}
-		response += line
-		if line == "" {
-			break;
-		}
+	line, e := ReadLine(rd)
+	for e == nil {
+		fmt.Printf("Rcvd: <<< \n" + line)
 	}
-	buf := make([]byte, 10)
-	for {
-		n, err := conn.fromPipe.Read(buf)
-		if 
-	}
-	conn.fromPipe.Read(buf)
-	response = get_response()
-	print("Rcvd: <<< \n" + response)
-	return response
 }
 
 // Processes a file

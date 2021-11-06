@@ -13,12 +13,6 @@ WORKDIR /audacity
 COPY ["dependencies.sh", "/audacity/"]
 RUN dos2unix dependencies.sh
 
-# pkg-config is so broken
-# COPY ["pkgconfig/*", "/usr/local/lib/pkgconfig/"]
-
-# RUN dos2unix dependencies.sh && \
-#    find /usr/local/lib/pkgconfig/ -type f -print0 | xargs -0 dos2unix
-
 RUN ["bash", "-ex", "dependencies.sh"]
 
 COPY ["entrypoint.sh", "/audacity/"]

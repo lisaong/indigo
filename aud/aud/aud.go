@@ -72,17 +72,22 @@ func Disconnect(conn Connection) {
 	close(conn.fromPipe)
 }
 
-func ReadLine(rd *bufio.Reader) (string, error) {
-	var (
-		isPrefix = true
-		err      error
-		line, ln []byte
-	)
-	for isPrefix && err == nil {
-		line, isPrefix, err = rd.ReadLine()
-		ln = append(ln, line...)
+func ReadResponse(rd *bufio.Reader) (response string, err error) {
+	const END = "\n\n"
+
+	next := make([]byte, 2)
+	var line string
+
+	next, err = rd.Peek(len(next))
+
+	for err == nil && string(next) != END {
+		line, err = rd.ReadString('\n')
+		if err == nil {
+			response += line
+		}
+		next, err = rd.Peek(len(next))
 	}
-	return string(ln), err
+	return
 }
 
 // Sends a single command
@@ -93,9 +98,9 @@ func SendCommand(conn Connection, command string) {
 
 	// Note: default buffer size is 4K
 	rd := bufio.NewReader(conn.fromPipe)
-	line, e := ReadLine(rd)
-	for e == nil {
-		fmt.Printf("Rcvd: <<< \n" + line)
+	response, err := ReadResponse(rd)
+	if err == nil {
+		fmt.Printf("Rcvd: <<< \n" + response)
 	}
 }
 

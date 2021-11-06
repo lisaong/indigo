@@ -9,18 +9,47 @@ package aud
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strconv"
 )
 
-// Connects to Audacity
-func Connect() {
-	// Create named pipe
+const TO_PIPE_PREFIX = "audacity_script_pipe.to."
+const FROM_PIPE_PREFIX = "audacity_script_pipe.from."
 
-	// return file object
+func CreateNamedPipe(readOnly bool) *os.File {
+
+	flag := os.O_RDWR
+	prefix := TO_PIPE_PREFIX
+	if readOnly {
+		flag = os.O_RDONLY
+		prefix = FROM_PIPE_PREFIX
+	}
+
+	path := filepath.Join(os.TempDir(), prefix+strconv.Itoa(os.Getuid()))
+	file, err := os.OpenFile(path, flag, 0600)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Could not create file: %s %w. Make sure Audacity is running with mod-script-pipe enabled.", path, err))
+	}
+	return file
+}
+
+// Connects to Audacity
+func Connect() (*os.File, *os.File) {
+
+	// Create named pipes
+	toPipe := CreateNamedPipe(false)
+	fromPipe := CreateNamedPipe(true)
+
+	return toPipe, fromPipe
 }
 
 // Disconnects from Audacity
-func Disconnect( /*file object*/ ) {
-
+func Disconnect(files ...*os.File) {
+	for _, f := range files {
+		if f != nil {
+			f.Close()
+		}
+	}
 }
 
 // Processes a file

@@ -113,14 +113,26 @@ func SendCommand(conn Connection, command string) {
 }
 
 // Processes a file
-func Process(conn Connection, path string) {
+func Process(conn Connection, path string, output_path string) {
 	fileinfo, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		fmt.Printf("%s does not exist\n", path)
 	}
 	fmt.Println(fileinfo)
-	path, err = filepath.Abs(path)
+	path, _ = filepath.Abs(path)
+	output_path, _ = filepath.Abs(output_path)
 
+	// Process
 	SendCommand(conn, "RemoveTracks")
 	SendCommand(conn, "Import2: Filename="+path)
+	SendCommand(conn, "Select: Track=0")
+	SendCommand(conn, "SelTrackStartToEnd")
+	SendCommand(conn, "Macro_NR&EQ")
+
+	// Export
+	SendCommand(conn, "Select: Track=0")
+	SendCommand(conn, "SelTrackStartToEnd")
+	SendCommand(conn, "Export2: Filename="+output_path+" NumChannels=1.0")
+	SendCommand(conn, "SelectAll")
+	SendCommand(conn, "RemoveTracks")
 }

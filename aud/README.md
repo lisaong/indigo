@@ -22,7 +22,16 @@ Audacity on Linux does not include mod-script-pipe, so this uses a custom-built 
 2. Tools -> Apply Macro
 3. Select the "Noise Profile" macro from the list
 
-## Scripting
+## Run
+
+```shell
+cd main
+go mod edit -replace aud/aud=../aud
+go mod tidy
+go run .
+```
+
+## Scripting reference
 
 List of scriptable command ids:
 

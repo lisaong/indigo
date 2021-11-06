@@ -73,19 +73,19 @@ func Disconnect(conn Connection) {
 }
 
 func ReadResponse(rd *bufio.Reader) (response string, err error) {
-	const END = "\n\n"
-
-	next := make([]byte, 2)
+	const END = "BatchCommand finished: OK\n"
 	var line string
 
-	next, err = rd.Peek(len(next))
-
-	for err == nil && string(next) != END {
+	for err == nil && line != END {
 		line, err = rd.ReadString('\n')
 		if err == nil {
 			response += line
 		}
-		next, err = rd.Peek(len(next))
+	}
+
+	// one last newline
+	if line == END {
+		rd.ReadString('\n')
 	}
 	return
 }

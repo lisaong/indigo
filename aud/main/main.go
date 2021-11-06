@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	aud.Connect()
-	aud.Process("../media/mixkit-tech-house-vibes-130.mp3")
-	aud.Disconnect()
+	conn := aud.Connect()
+	aud.Process(conn, "../media/mixkit-tech-house-vibes-130.mp3")
+	aud.Disconnect(conn)
 }

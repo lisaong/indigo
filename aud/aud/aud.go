@@ -56,6 +56,11 @@ func CreateNamedPipe(direction int) (file *os.File) {
 func Connect() (conn Connection) {
 	conn.toPipe = CreateNamedPipe(READ_WRITE)
 	conn.fromPipe = CreateNamedPipe(READ)
+
+	if conn.toPipe == nil || conn.fromPipe == nil {
+		panic("Could not connect")
+	}
+
 	return
 }
 
@@ -108,12 +113,14 @@ func SendCommand(conn Connection, command string) {
 }
 
 // Processes a file
-func Process( /*file object, */ path string) {
+func Process(conn Connection, path string) {
 	fileinfo, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		fmt.Printf("%s does not exist\n", path)
 	}
 	fmt.Println(fileinfo)
+	path, err = filepath.Abs(path)
 
-	// TODO
+	SendCommand(conn, "RemoveTracks")
+	SendCommand(conn, "Import2: Filename="+path)
 }

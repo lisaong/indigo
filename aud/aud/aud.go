@@ -13,10 +13,10 @@ import (
 	"strconv"
 )
 
-const TO_PIPE_PREFIX = "audacity_script_pipe.to."
-const FROM_PIPE_PREFIX = "audacity_script_pipe.from."
+func CreateNamedPipe(readOnly bool) (file *os.File) {
 
-func CreateNamedPipe(readOnly bool) *os.File {
+	const TO_PIPE_PREFIX = "audacity_script_pipe.to."
+	const FROM_PIPE_PREFIX = "audacity_script_pipe.from."
 
 	flag := os.O_RDWR
 	prefix := TO_PIPE_PREFIX
@@ -32,17 +32,14 @@ func CreateNamedPipe(readOnly bool) *os.File {
 	} else {
 		fmt.Printf("Opened %s\n", file.Name())
 	}
-	return file
+	return
 }
 
-// Connects to Audacity
-func Connect() (*os.File, *os.File) {
-
-	// Create named pipes
-	toPipe := CreateNamedPipe(false)
-	fromPipe := CreateNamedPipe(true)
-
-	return toPipe, fromPipe
+// Connects to Audacity's scripting interface
+func Connect() (toPipe *os.File, fromPipe *os.File) {
+	toPipe = CreateNamedPipe(false)
+	fromPipe = CreateNamedPipe(true)
+	return
 }
 
 // Disconnects from Audacity

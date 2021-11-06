@@ -7,6 +7,7 @@
 package aud
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -74,6 +75,29 @@ func SendCommand(conn Connection, command string) {
 	fmt.Println("Send: >>> \n" + command)
 	conn.toPipe.WriteString(command)
 	conn.toPipe.Sync()
+
+	var response string
+	// Note: default buffer size is 4K
+	rd := bufio.NewReader(conn.fromPipe)
+	for {
+		line, err := rd.ReadString('\n')
+		if err != nil {
+			fmt.Print(err)
+		}
+		response += line
+		if line == "" {
+			break;
+		}
+	}
+	buf := make([]byte, 10)
+	for {
+		n, err := conn.fromPipe.Read(buf)
+		if 
+	}
+	conn.fromPipe.Read(buf)
+	response = get_response()
+	print("Rcvd: <<< \n" + response)
+	return response
 }
 
 // Processes a file

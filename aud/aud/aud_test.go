@@ -9,3 +9,10 @@ func TestConnectDisconnect(t *testing.T) {
 	}
 	Disconnect(connection)
 }
+
+func TestSendCommand(t *testing.T) {
+	connection := Connect()
+	SendCommand(connection, "Help: Command=\"GetInfo\"")
+
+	Disconnect(connection)
+}

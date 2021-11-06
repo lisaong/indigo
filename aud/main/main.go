@@ -5,12 +5,10 @@ package main
 
 import (
 	"aud/aud"
-	"fmt"
-	"log"
 )
 
 func main() {
-	log.SetPrefix("aud:")
-	fmt.Println(("Aud!"))
-	aud.Load("../media/mixkit-tech-house-vibes-130.mp3")
+	aud.Connect()
+	aud.Process("../media/mixkit-tech-house-vibes-130.mp3")
+	aud.Disconnect()
 }

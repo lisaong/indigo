@@ -50,14 +50,14 @@ func CreateNamedPipe(mode int) (file *os.File) {
 }
 
 // Connects to Audacity's scripting interface
-func Connect() (connection Connection) {
-	connection.toPipe = CreateNamedPipe(READ_WRITE)
-	connection.fromPipe = CreateNamedPipe(READ)
+func Connect() (conn Connection) {
+	conn.toPipe = CreateNamedPipe(READ_WRITE)
+	conn.fromPipe = CreateNamedPipe(READ)
 	return
 }
 
 // Disconnects from Audacity
-func Disconnect(connection Connection) {
+func Disconnect(conn Connection) {
 	close := func(f *os.File) {
 		if f != nil {
 			f.Close()
@@ -65,8 +65,15 @@ func Disconnect(connection Connection) {
 		}
 	}
 
-	close(connection.toPipe)
-	close(connection.fromPipe)
+	close(conn.toPipe)
+	close(conn.fromPipe)
+}
+
+// Sends a single command
+func SendCommand(conn Connection, command string) {
+	fmt.Println("Send: >>> \n" + command)
+	conn.toPipe.WriteString(command)
+	conn.toPipe.Sync()
 }
 
 // Processes a file

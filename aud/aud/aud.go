@@ -13,16 +13,25 @@ import (
 	"strconv"
 )
 
-func CreateNamedPipe(readOnly bool) (file *os.File) {
+const (
+	_ = iota
+	READ
+	READ_WRITE
+)
+
+func CreateNamedPipe(mode int) (file *os.File) {
 
 	const TO_PIPE_PREFIX = "audacity_script_pipe.to."
 	const FROM_PIPE_PREFIX = "audacity_script_pipe.from."
 
-	flag := os.O_RDWR
-	prefix := TO_PIPE_PREFIX
-	if readOnly {
+	var flag int
+	var prefix string
+	if mode == READ {
 		flag = os.O_RDONLY
 		prefix = FROM_PIPE_PREFIX
+	} else {
+		flag = os.O_RDWR
+		prefix = TO_PIPE_PREFIX
 	}
 
 	path := filepath.Join(os.TempDir(), prefix+strconv.Itoa(os.Getuid()))
@@ -37,8 +46,8 @@ func CreateNamedPipe(readOnly bool) (file *os.File) {
 
 // Connects to Audacity's scripting interface
 func Connect() (toPipe *os.File, fromPipe *os.File) {
-	toPipe = CreateNamedPipe(false)
-	fromPipe = CreateNamedPipe(true)
+	toPipe = CreateNamedPipe(READ_WRITE)
+	fromPipe = CreateNamedPipe(READ)
 	return
 }
 

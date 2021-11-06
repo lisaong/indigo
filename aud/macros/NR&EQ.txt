@@ -1,0 +1,4 @@
+Normalize:ApplyGain="1" PeakLevel="-10" RemoveDcOffset="1" StereoIndependent="0"
+NoiseReduction:Use_Preset="<Factory Defaults>"
+FilterCurve:FilterLength="8191" InterpolateLin="0" InterpolationMethod="B-spline"
+Normalize:ApplyGain="1" PeakLevel="-1" RemoveDcOffset="0" StereoIndependent="0"

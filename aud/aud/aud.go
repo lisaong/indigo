@@ -19,6 +19,11 @@ const (
 	READ_WRITE
 )
 
+type Connection struct {
+	toPipe   *os.File
+	fromPipe *os.File
+}
+
 func CreateNamedPipe(mode int) (file *os.File) {
 
 	const TO_PIPE_PREFIX = "audacity_script_pipe.to."
@@ -45,20 +50,23 @@ func CreateNamedPipe(mode int) (file *os.File) {
 }
 
 // Connects to Audacity's scripting interface
-func Connect() (toPipe *os.File, fromPipe *os.File) {
-	toPipe = CreateNamedPipe(READ_WRITE)
-	fromPipe = CreateNamedPipe(READ)
+func Connect() (connection Connection) {
+	connection.toPipe = CreateNamedPipe(READ_WRITE)
+	connection.fromPipe = CreateNamedPipe(READ)
 	return
 }
 
 // Disconnects from Audacity
-func Disconnect(files ...*os.File) {
-	for _, f := range files {
+func Disconnect(connection Connection) {
+	close := func(f *os.File) {
 		if f != nil {
-			fmt.Printf("Closed %s\n", f.Name())
 			f.Close()
+			fmt.Printf("Closed %s\n", f.Name())
 		}
 	}
+
+	close(connection.toPipe)
+	close(connection.fromPipe)
 }
 
 // Processes a file

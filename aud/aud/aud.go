@@ -29,6 +29,8 @@ func CreateNamedPipe(readOnly bool) *os.File {
 	file, err := os.OpenFile(path, flag, 0600)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Could not create file: %s %w. Make sure Audacity is running with mod-script-pipe enabled.", path, err))
+	} else {
+		fmt.Printf("Opened %s\n", file.Name())
 	}
 	return file
 }
@@ -47,6 +49,7 @@ func Connect() (*os.File, *os.File) {
 func Disconnect(files ...*os.File) {
 	for _, f := range files {
 		if f != nil {
+			fmt.Printf("Closed %s\n", f.Name())
 			f.Close()
 		}
 	}

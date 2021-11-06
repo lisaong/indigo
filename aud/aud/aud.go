@@ -72,20 +72,23 @@ func Disconnect(conn Connection) {
 	close(conn.fromPipe)
 }
 
-func ReadResponse(rd *bufio.Reader) (response string, err error) {
-	const END = "BatchCommand finished: OK\n"
+func GetResponse(rd *bufio.Reader) (response string, err error) {
+	const END_SEQUENCE = "BatchCommand finished: OK\n"
 	var line string
 
-	for err == nil && line != END {
+	for err == nil && line != END_SEQUENCE {
 		line, err = rd.ReadString('\n')
 		if err == nil {
 			response += line
 		}
 	}
 
-	// one last newline
-	if line == END {
-		rd.ReadString('\n')
+	// one last newline after the end sequence
+	if line == END_SEQUENCE {
+		line, err = rd.ReadString('\n')
+		if err == nil {
+			response += line
+		}
 	}
 	return
 }
@@ -98,7 +101,7 @@ func SendCommand(conn Connection, command string) {
 
 	// Note: default buffer size is 4K
 	rd := bufio.NewReader(conn.fromPipe)
-	response, err := ReadResponse(rd)
+	response, err := GetResponse(rd)
 	if err == nil {
 		fmt.Printf("Rcvd: <<< \n" + response)
 	}

@@ -86,10 +86,10 @@ def quick_test():
     #do_command('GetInfo: Type=Menus')
     #do_command('SetPreference: Name=GUI/Theme Value=classic Reload=1')
     do_command("RemoveTracks")
-    do_command('Import2: Filename="/home/lisa/code/indigo/aud/media/mixkit-tech-house-vibes-130.mp3"')
+    do_command(f'Import2: Filename={os.path.join(os.getcwd(), "media/mixkit-tech-house-vibes-130.mp3")}')
     do_command("Select: Track=0")
     do_command("SelTrackStartToEnd")
     do_command('Macro_NR&EQ')
-    export("/home/lisa/code/indigo/aud/media/cleaned.mp3")
+    export(os.path.join(os.getcwd(), "media/cleaned.mp3"))
 
 quick_test()

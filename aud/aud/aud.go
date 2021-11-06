@@ -13,16 +13,18 @@ import (
 
 // Connects to Audacity
 func Connect() {
+	// Create named pipe
 
+	// return file object
 }
 
 // Disconnects from Audacity
-func Disconnect() {
+func Disconnect( /*file object*/ ) {
 
 }
 
 // Processes a file
-func Process(path string) {
+func Process( /*file object, */ path string) {
 	fileinfo, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		fmt.Printf("%s does not exist\n", path)
